@@ -11,7 +11,7 @@
 	var recommended = Db.Products.Include(p => p.Restaurant).OrderByDescending(p => p.Id).Take(6).ToList();
 }
 
-<div class="container py-5">
+<div class="container py-5 customer-dashboard">
   <!-- Header -->
   <div class="d-flex align-items-center gap-3 mb-4">
 	<div class="brand-mark">QD</div>
@@ -94,18 +94,16 @@
   <!-- Restaurants -->
   <div class="mb-4">
 	<h4>Restaurants near you</h4>
-	<div class="row g-3">
+	<div class="restaurant-grid">
 	  @foreach (var r in restaurants)
 	  {
-		<div class="col-6 col-md-4 col-lg-3">
-		  <div class="restaurant-card">
-			<img src="@r.ImageUrl" alt="@r.Name" />
-			<div class="card-body">
-			  <h6 style="color:var(--white)">@r.Name</h6>
-			  <div class="small text-muted-light">@r.Cuisine</div>
-			  <div class="mt-2 d-flex gap-2">
-				<a class="qd-btn" href="/Customer/Restaurant/@r.Id">View</a>
-			  </div>
+		<div class="restaurant-card">
+		  <img src="@r.ImageUrl" alt="@r.Name" />
+		  <div class="card-body">
+			<h6 style="color:var(--white)">@r.Name</h6>
+			<div class="small text-muted-light">@r.Cuisine</div>
+			<div class="mt-2 d-flex gap-2">
+			  <a class="qd-btn" href="/Customer/Restaurant/@r.Id">View</a>
 			</div>
 		  </div>
 		</div>
@@ -116,11 +114,10 @@
   <!-- Recommended Food -->
   <div class="mb-5">
 	<h4>Recommended for you</h4>
-	<div class="row g-3">
+	<div class="food-grid">
 	  @foreach (var p in recommended)
 	  {
-		<div class="col-6 col-md-4">
-		  <div class="card glass product-card p-0">
+		<div class="card glass product-card p-0">
 			<img src="@(string.IsNullOrWhiteSpace(p.ImageUrl) ? p.Restaurant?.ImageUrl : p.ImageUrl)" style="height:180px;object-fit:cover;width:100%" />
 			<div style="padding:12px">
 			  <div style="color:var(--white);font-weight:700">@p.Name</div>
@@ -130,7 +127,6 @@
 				<a class="qd-btn" href="/Customer/Restaurant/@p.RestaurantId">Add</a>
 			  </div>
 			</div>
-		  </div>
 		</div>
 	  }
 	</div>

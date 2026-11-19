@@ -1,1 +1,77 @@
-{"Version":1,"Hash":"8svtnCQRye3Uh1+GyDrbAYSYXd0MKobL7K5d9JWySVA=","Source":"QuickDrop","BasePath":"/","Mode":"Root","ManifestType":"Build","ReferencedProjectsConfiguration":[],"DiscoveryPatterns":[{"Name":"QuickDrop\\wwwroot","Source":"QuickDrop","ContentRoot":"C:\\Users\\BILL'STECH\\Desktop\\QuickDrop(1).zip\\QuickDrop\\wwwroot\\","BasePath":"/","Pattern":"**"}],"Assets":[{"Identity":"C:\\Users\\BILL'STECH\\Desktop\\QuickDrop(1).zip\\QuickDrop\\wwwroot\\css\\site.css","SourceId":"QuickDrop","SourceType":"Discovered","ContentRoot":"C:\\Users\\BILL'STECH\\Desktop\\QuickDrop(1).zip\\QuickDrop\\wwwroot\\","BasePath":"/","RelativePath":"css/site#[.{fingerprint}]?.css","AssetKind":"All","AssetMode":"All","AssetRole":"Primary","AssetMergeBehavior":"","AssetMergeSource":"","RelatedAsset":"","AssetTraitName":"","AssetTraitValue":"","Fingerprint":"32v9sby9jm","Integrity":"ew3F21pMjnhw8jL8+BzbCb+0EhRWDNSD3+Jj5zFz1jA=","CopyToOutputDirectory":"Never","CopyToPublishDirectory":"PreserveNewest","OriginalItemSpec":"wwwroot\\css\\site.css","FileLength":26400,"LastWriteTime":"2026-10-22T14:53:42+00:00"},{"Identity":"C:\\Users\\BILL'STECH\\Desktop\\QuickDrop(1).zip\\QuickDrop\\wwwroot\\js\\map.js","SourceId":"QuickDrop","SourceType":"Discovered","ContentRoot":"C:\\Users\\BILL'STECH\\Desktop\\QuickDrop(1).zip\\QuickDrop\\wwwroot\\","BasePath":"/","RelativePath":"js/map#[.{fingerprint}]?.js","AssetKind":"All","AssetMode":"All","AssetRole":"Primary","AssetMergeBehavior":"","AssetMergeSource":"","RelatedAsset":"","AssetTraitName":"","AssetTraitValue":"","Fingerprint":"a4am4qr6b4","Integrity":"ujgiT9ZEoG8amxnlx1zGvwr/lL/DK1bJAh8/8AAhwt0=","CopyToOutputDirectory":"Never","CopyToPublishDirectory":"PreserveNewest","OriginalItemSpec":"wwwroot\\js\\map.js","FileLength":838,"LastWriteTime":"2026-09-23T11:53:22+00:00"},{"Identity":"C:\\Users\\BILL'STECH\\Desktop\\QuickDrop(1).zip\\QuickDrop\\wwwroot\\js\\site.js","SourceId":"QuickDrop","SourceType":"Discovered","ContentRoot":"C:\\Users\\BILL'STECH\\Desktop\\QuickDrop(1).zip\\QuickDrop\\wwwroot\\","BasePath":"/","RelativePath":"js/site#[.{fingerprint}]?.js","AssetKind":"All","AssetMode":"All","AssetRole":"Primary","AssetMergeBehavior":"","AssetMergeSource":"","RelatedAsset":"","AssetTraitName":"","AssetTraitValue":"","Fingerprint":"4xpd3581rx","Integrity":"eJsBLz+z+Epl3jFGl5z3/EV3SO2FpFm04gdhn5QPZDI=","CopyToOutputDirectory":"Never","CopyToPublishDirectory":"PreserveNewest","OriginalItemSpec":"wwwroot\\js\\site.js","FileLength":9707,"LastWriteTime":"2026-10-22T14:55:58+00:00"}],"Endpoints":[{"Route":"css/site.32v9sby9jm.css","AssetFile":"C:\\Users\\BILL'STECH\\Desktop\\QuickDrop(1).zip\\QuickDrop\\wwwroot\\css\\site.css","Selectors":[],"ResponseHeaders":[{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"26400"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\"ew3F21pMjnhw8jL8+BzbCb+0EhRWDNSD3+Jj5zFz1jA=\""},{"Name":"Last-Modified","Value":"Thu, 22 Oct 2026 14:53:42 GMT"}],"EndpointProperties":[{"Name":"fingerprint","Value":"32v9sby9jm"},{"Name":"integrity","Value":"sha256-ew3F21pMjnhw8jL8+BzbCb+0EhRWDNSD3+Jj5zFz1jA="},{"Name":"label","Value":"css/site.css"}]},{"Route":"css/site.css","AssetFile":"C:\\Users\\BILL'STECH\\Desktop\\QuickDrop(1).zip\\QuickDrop\\wwwroot\\css\\site.css","Selectors":[],"ResponseHeaders":[{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"26400"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\"ew3F21pMjnhw8jL8+BzbCb+0EhRWDNSD3+Jj5zFz1jA=\""},{"Name":"Last-Modified","Value":"Thu, 22 Oct 2026 14:53:42 GMT"}],"EndpointProperties":[{"Name":"integrity","Value":"sha256-ew3F21pMjnhw8jL8+BzbCb+0EhRWDNSD3+Jj5zFz1jA="}]},{"Route":"js/map.a4am4qr6b4.js","AssetFile":"C:\\Users\\BILL'STECH\\Desktop\\QuickDrop(1).zip\\QuickDrop\\wwwroot\\js\\map.js","Selectors":[],"ResponseHeaders":[{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"838"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\"ujgiT9ZEoG8amxnlx1zGvwr/lL/DK1bJAh8/8AAhwt0=\""},{"Name":"Last-Modified","Value":"Wed, 23 Sep 2026 11:53:22 GMT"}],"EndpointProperties":[{"Name":"fingerprint","Value":"a4am4qr6b4"},{"Name":"integrity","Value":"sha256-ujgiT9ZEoG8amxnlx1zGvwr/lL/DK1bJAh8/8AAhwt0="},{"Name":"label","Value":"js/map.js"}]},{"Route":"js/map.js","AssetFile":"C:\\Users\\BILL'STECH\\Desktop\\QuickDrop(1).zip\\QuickDrop\\wwwroot\\js\\map.js","Selectors":[],"ResponseHeaders":[{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"838"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\"ujgiT9ZEoG8amxnlx1zGvwr/lL/DK1bJAh8/8AAhwt0=\""},{"Name":"Last-Modified","Value":"Wed, 23 Sep 2026 11:53:22 GMT"}],"EndpointProperties":[{"Name":"integrity","Value":"sha256-ujgiT9ZEoG8amxnlx1zGvwr/lL/DK1bJAh8/8AAhwt0="}]},{"Route":"js/site.4xpd3581rx.js","AssetFile":"C:\\Users\\BILL'STECH\\Desktop\\QuickDrop(1).zip\\QuickDrop\\wwwroot\\js\\site.js","Selectors":[],"ResponseHeaders":[{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"9707"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\"eJsBLz+z+Epl3jFGl5z3/EV3SO2FpFm04gdhn5QPZDI=\""},{"Name":"Last-Modified","Value":"Thu, 22 Oct 2026 14:55:58 GMT"}],"EndpointProperties":[{"Name":"fingerprint","Value":"4xpd3581rx"},{"Name":"integrity","Value":"sha256-eJsBLz+z+Epl3jFGl5z3/EV3SO2FpFm04gdhn5QPZDI="},{"Name":"label","Value":"js/site.js"}]},{"Route":"js/site.js","AssetFile":"C:\\Users\\BILL'STECH\\Desktop\\QuickDrop(1).zip\\QuickDrop\\wwwroot\\js\\site.js","Selectors":[],"ResponseHeaders":[{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"9707"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\"eJsBLz+z+Epl3jFGl5z3/EV3SO2FpFm04gdhn5QPZDI=\""},{"Name":"Last-Modified","Value":"Thu, 22 Oct 2026 14:55:58 GMT"}],"EndpointProperties":[{"Name":"integrity","Value":"sha256-eJsBLz+z+Epl3jFGl5z3/EV3SO2FpFm04gdhn5QPZDI="}]}]}
+{
+  "Version": 1,
+  "Hash": "Pz768zfou2qw6wBaKjaOOy+ayMSuoVKm+OXTEQfuaLs=",
+  "Source": "QuickDrop",
+  "BasePath": "_content/QuickDrop",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "QuickDrop/wwwroot",
+      "Source": "QuickDrop",
+      "ContentRoot": "/home/surface_laptop_3/projects/new-project/QuickDrop/wwwroot/",
+      "BasePath": "_content/QuickDrop",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "/home/surface_laptop_3/projects/new-project/QuickDrop/wwwroot/css/site.css",
+      "SourceId": "QuickDrop",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/surface_laptop_3/projects/new-project/QuickDrop/wwwroot/",
+      "BasePath": "_content/QuickDrop",
+      "RelativePath": "css/site.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/css/site.css"
+    },
+    {
+      "Identity": "/home/surface_laptop_3/projects/new-project/QuickDrop/wwwroot/js/map.js",
+      "SourceId": "QuickDrop",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/surface_laptop_3/projects/new-project/QuickDrop/wwwroot/",
+      "BasePath": "_content/QuickDrop",
+      "RelativePath": "js/map.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/js/map.js"
+    },
+    {
+      "Identity": "/home/surface_laptop_3/projects/new-project/QuickDrop/wwwroot/js/site.js",
+      "SourceId": "QuickDrop",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/surface_laptop_3/projects/new-project/QuickDrop/wwwroot/",
+      "BasePath": "_content/QuickDrop",
+      "RelativePath": "js/site.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/js/site.js"
+    }
+  ]
+}

@@ -65,21 +65,19 @@
 	  <a class="qd-btn ghost" href="/Account/Login">Sign in to order</a>
 	</div>
 
-	<div class="row g-4">
-	  @foreach (var r in Model)
+	<div class="restaurant-grid">
+	  @foreach (var r in Model ?? Enumerable.Empty<QuickDrop.Models.Restaurant>())
 	  {
-		<div class="col-6 col-md-4 col-lg-3">
-		  <div class="restaurant-card reveal" style="transition:transform .25s ease, box-shadow .25s ease;">
-			<img src="@r.ImageUrl" alt="@r.Name" loading="lazy" onerror="this.onerror=null;this.src='/images/restaurant-placeholder.jpg';" />
-			<div class="card-body">
-			  <h5 style="color:var(--white);margin-bottom:6px">@r.Name</h5>
-			  <p class="text-muted small" style="margin-bottom:8px">@r.Cuisine</p>
-			  <div class="d-flex justify-content-between align-items-center mb-2">
-				<div class="small text-muted-light">⭐ 4.5</div>
-				<div class="small text-muted-light">25-35 min · $3.99</div>
-			  </div>
-			  <a class="qd-btn w-100" href="/Customer/Restaurant/@r.Id">View Restaurant</a>
+		<div class="restaurant-card reveal">
+		  <img src="@r.ImageUrl" alt="@r.Name" loading="lazy" onerror="this.onerror=null;this.src='/images/restaurant-placeholder.jpg';" />
+		  <div class="card-body">
+			<h5 style="color:var(--white);margin-bottom:6px">@r.Name</h5>
+			<p class="text-muted small" style="margin-bottom:8px">@r.Cuisine</p>
+			<div class="d-flex justify-content-between align-items-center mb-2">
+			  <div class="small text-muted-light">⭐ 4.5</div>
+			  <div class="small text-muted-light">25-35 min · $3.99</div>
 			</div>
+			<a class="qd-btn w-100" href="/Customer/Restaurant/@r.Id">View Restaurant</a>
 		  </div>
 		</div>
 	  }
@@ -95,20 +93,20 @@
 	  <a href="/Customer/Index" class="qd-btn ghost">See all</a>
 	</div>
 
-	<div class="row g-3">
+	<div class="food-grid">
 	  @{
-		var foods = Model.SelectMany(r => r.Products.Select(p => new { Product = p, Restaurant = r })).Take(8).ToList();
+		var foods = (Model ?? Enumerable.Empty<QuickDrop.Models.Restaurant>())
+			.SelectMany(r => r.Products.Select(p => new { Product = p, Restaurant = r }))
+			.Take(8)
+			.ToList();
 	  }
 	  @if (!foods.Any()) {
-		<div class="col-12">
-		  <div class="empty-state">No popular items yet — explore restaurants to find tasty meals.</div>
-		</div>
+		<div class="empty-state">No popular items yet — explore restaurants to find tasty meals.</div>
 	  } else {
 		foreach (var item in foods) {
-		  <div class="col-6 col-md-3">
-			<div class="card glass product-card reveal" style="padding:0;">
-				<img src="@(string.IsNullOrWhiteSpace(item.Product.ImageUrl) ? item.Restaurant.ImageUrl : item.Product.ImageUrl)" alt="@item.Product.Name" loading="lazy" onerror="this.onerror=null;this.src='/images/food-placeholder.jpg';" style="width:100%;height:140px;object-fit:cover;border-top-left-radius:12px;border-top-right-radius:12px" />
-			  <div style="padding:12px">
+		  <div class="card glass product-card reveal" style="padding:0;">
+			<img src="@(string.IsNullOrWhiteSpace(item.Product.ImageUrl) ? item.Restaurant.ImageUrl : item.Product.ImageUrl)" alt="@item.Product.Name" loading="lazy" onerror="this.onerror=null;this.src='/images/food-placeholder.jpg';" style="width:100%;height:140px;object-fit:cover;border-top-left-radius:12px;border-top-right-radius:12px" />
+		    <div style="padding:12px">
 				<strong style="color:var(--white)">@item.Product.Name</strong>
 				<div class="small text-muted-light">@item.Restaurant.Name · @($"{item.Product.Price:C}")</div>
 				<div class="d-flex justify-content-between align-items-center mt-2">
@@ -117,7 +115,6 @@
 				</div>
 			  </div>
 			</div>
-		  </div>
 		}
 	  }
 	</div>

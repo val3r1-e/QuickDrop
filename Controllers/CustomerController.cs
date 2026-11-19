@@ -28,10 +28,15 @@ public class CustomerController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> PlaceOrder(int productId, int quantity, string deliveryAddress, string paymentMethod, double deliveryLat = 0.3476, double deliveryLng = 32.5825)
     {
         var user = UserNow;
         if (user == null) return RedirectToAction("Login", "Account");
+        if (quantity < 1 || quantity > 100) return BadRequest("Quantity must be between 1 and 100.");
+        if (string.IsNullOrWhiteSpace(deliveryAddress)) return BadRequest("A delivery address is required.");
+        if (paymentMethod != "Cash" && paymentMethod != "Card") return BadRequest("Invalid payment method.");
+        if (deliveryLat < -90 || deliveryLat > 90 || deliveryLng < -180 || deliveryLng > 180) return BadRequest("Invalid delivery coordinates.");
 
         var product = await _db.Products.Include(p => p.Restaurant).FirstOrDefaultAsync(p => p.Id == productId);
         if (product == null) return NotFound();
@@ -56,10 +61,27 @@ public class CustomerController : Controller
         return RedirectToAction("Index");
     }
 
-    public async Task<IActionResult> Track(int id)
+    public async Task<IActionResult> Track(int id = 0)
     {
+        if (id == 0)
+        {
+            var currentUser = UserNow;
+            if (currentUser == null) return RedirectToAction("Login", "Account");
+
+            var activeOrder = await _db.Orders
+                .Where(o => o.CustomerId == currentUser.Id && o.Status != "Delivered")
+                .OrderByDescending(o => o.CreatedAt)
+                .FirstOrDefaultAsync();
+
+            if (activeOrder != null) return RedirectToAction("Track", new { id = activeOrder.Id });
+            return RedirectToAction("Index");
+        }
+
         var order = await _db.Orders.Include(o => o.Restaurant).Include(o => o.Driver).FirstOrDefaultAsync(o => o.Id == id);
         if (order == null) return NotFound();
+        var trackingUser = UserNow;
+        if (trackingUser == null) return RedirectToAction("Login", "Account");
+        if (order.CustomerId != trackingUser.Id && trackingUser.Role != "Admin") return Forbid();
         ViewBag.GoogleMapsKey = HttpContext.RequestServices.GetRequiredService<IConfiguration>()["GoogleMaps:ApiKey"];
         return View(order);
     }

@@ -22,7 +22,19 @@
     var ctx = document.getElementById('revenueChart').getContext('2d');
     var labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
     var data = { labels: labels, datasets: [{ label: 'Revenue', data: [120000,150000,90000,200000,180000,220000,160000], backgroundColor: 'rgba(108,43,217,0.12)', borderColor: 'rgba(108,43,217,0.9)', tension: 0.3, fill: true }] };
-    new Chart(ctx, { type: 'line', data: data, options: { plugins:{legend:{display:false}}, scales:{y:{ticks:{color:'#B8AFC5'}, grid:{color:'rgba(255,255,255,0.03)'}}, x:{ticks:{color:'#B8AFC5'}, grid:{color:'rgba(255,255,255,0.02)'}} } });
+    new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { ticks: { color:'#B8AFC5' }, grid: { color:'rgba(255,255,255,0.03)' } },
+          x: { ticks: { color:'#B8AFC5' }, grid: { color:'rgba(255,255,255,0.02)' } }
+        }
+      }
+    });
   }catch(e){ console.warn('Chart render failed', e); }
 })();
 
@@ -35,8 +47,11 @@
     var card = document.querySelector('.login-card');
     if (toggle && pwd){
       toggle.addEventListener('click', function(){
-        if (pwd.type === 'password'){ pwd.type = 'text'; toggle.textContent = 'Hide'; }
-        else { pwd.type = 'password'; toggle.textContent = 'Show'; }
+        var show = pwd.type === 'password';
+        pwd.type = show ? 'text' : 'password';
+        toggle.textContent = show ? 'Hide' : 'Show';
+        toggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        toggle.setAttribute('aria-pressed', show ? 'true' : 'false');
       });
     }
     if (form && card){
@@ -117,14 +132,28 @@
 
 // Mobile menu toggle: toggle 'open' class and update aria-expanded
 (function(){
-  try{
-    var btn = document.getElementById('mobileToggle');
-    var menu = document.getElementById('mobileMenu');
-    if (!btn || !menu) return;
-    var initOpen = menu.classList.contains('open');
-    btn.setAttribute('aria-expanded', initOpen);
-    btn.addEventListener('click', function(){ var open = menu.classList.toggle('open'); btn.setAttribute('aria-expanded', open); });
-  }catch(e){}
+  var btn = document.getElementById('mobileToggle');
+  var menu = document.getElementById('mobileMenu');
+  if (!btn || !menu) return;
+
+  function setMenuOpen(open){
+    menu.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+
+  btn.addEventListener('click', function(){
+    setMenuOpen(btn.getAttribute('aria-expanded') !== 'true');
+  });
+  menu.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', function(){ setMenuOpen(false); });
+  });
+  document.addEventListener('keydown', function(event){
+    if (event.key === 'Escape') setMenuOpen(false);
+  });
+  window.addEventListener('resize', function(){
+    if (window.innerWidth > 991) setMenuOpen(false);
+  });
 })();
 
 // Page load fade-in and smooth page transitions
@@ -213,4 +242,3 @@ window.qd.showToast = window.showToast || function(){ console.warn('showToast un
     }
   }catch(e){}
 })();
-

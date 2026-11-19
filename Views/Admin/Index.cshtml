@@ -97,7 +97,7 @@
 	  </section>
 
 	  <section class="mb-4">
-		<div class="d-flex gap-3 flex-column flex-lg-row">
+		<div class="admin-content-grid">
 		  <div class="flex-fill table-responsive-custom">
 			<div class="d-flex justify-content-between align-items-center mb-2"><h5 style="margin:0;color:var(--white)">Recent Orders</h5><div class="small text-muted-light">Updated live</div></div>
 			<div class="table-responsive">
@@ -122,19 +122,19 @@
 			</div>
 		  </div>
 
-		  <div style="width:360px;min-width:260px;">
+		  <div class="admin-insights">
 			<div class="card glass p-3 mb-3">
 			  <h6 style="margin:0;color:var(--white)">Revenue</h6>
-			  <canvas id="revenueChart" width="340" height="200"></canvas>
+			  <canvas id="revenueChart"></canvas>
 			</div>
 
 			<div class="card glass p-3 mb-3">
 			  <h6 style="margin:0;color:var(--white)">Driver activity</h6>
 			  <div class="mini-list mt-2">
-				@foreach(var d in ViewBag.ActiveDriversList ?? new List<dynamic>()){
+				@foreach(var d in ViewBag.ActiveDriversList ?? new List<QuickDrop.Models.AdminActivityViewModel>()){
 				  <div class="item"><div><strong>@d.Name</strong><div class="small text-muted-light">@d.Status</div></div><div class="small text-muted-light">@d.Location</div></div>
 				}
-				@if ((ViewBag.ActiveDriversList ?? new List<dynamic>()).Count == 0) { <div class="empty-state">No active drivers</div> }
+				@if ((ViewBag.ActiveDriversList ?? new List<QuickDrop.Models.AdminActivityViewModel>()).Count == 0) { <div class="empty-state">No active drivers</div> }
 			  </div>
 			</div>
 

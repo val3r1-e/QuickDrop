@@ -22,18 +22,18 @@
     <link rel="stylesheet" href="~/css/site.css?v=@cssVer" />
 </head>
 <body>
-<header class="qd-nav sticky-top">
+<header class="qd-nav">
     <nav class="main-nav">
         <div class="container d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-3">
                 <a class="navbar-brand" href="/">Quick<span>Drop</span></a>
                 <ul class="nav nav-links d-none d-lg-flex">
-                    <li><a class="nav-link @(path == "/" ? "active" : "")" href="/">Home</a></li>
-                    <li><a class="nav-link @(path.StartsWith("/customer/restaurant") || path == "/customer" ? "active" : "")" href="/Customer/Index">Restaurants</a></li>
-                    <li><a class="nav-link @(path.Contains("order-history") ? "active" : "")" href="/Customer/Index#order-history">Orders</a></li>
+                    <li><a class="nav-link @(path == "/" ? "active" : "")" @(path == "/" ? "aria-current=\"page\"" : "") href="/">Home</a></li>
+                    <li><a class="nav-link @(path.StartsWith("/customer/restaurant") || path == "/customer" ? "active" : "")" @(path.StartsWith("/customer/restaurant") || path == "/customer" ? "aria-current=\"page\"" : "") href="/Customer/Index">Restaurants</a></li>
+                    <li><a class="nav-link @(path.Contains("order-history") ? "active" : "")" @(path.Contains("order-history") ? "aria-current=\"page\"" : "") href="/Customer/Index#order-history">Orders</a></li>
                     <li><a class="nav-link" href="/#categories">Categories</a></li>
-                    <li><a class="nav-link @(path.StartsWith("/customer/track") ? "active" : "")" href="/Customer/Track">Track Order</a></li>
-                    <li><a class="nav-link @(path.StartsWith("/admin") || path.StartsWith("/driver") || path.StartsWith("/restaurant") ? "active" : "")" href="@dashboardUrl">Dashboard</a></li>
+                    <li><a class="nav-link @(path.StartsWith("/customer/track") ? "active" : "")" @(path.StartsWith("/customer/track") ? "aria-current=\"page\"" : "") href="/Customer/Track">Track Order</a></li>
+                    <li><a class="nav-link @(path.StartsWith("/admin") || path.StartsWith("/driver") || path.StartsWith("/restaurant") ? "active" : "")" @(path.StartsWith("/admin") || path.StartsWith("/driver") || path.StartsWith("/restaurant") ? "aria-current=\"page\"" : "") href="@dashboardUrl">Dashboard</a></li>
                 </ul>
             </div>
 
@@ -60,7 +60,7 @@
                     <a class="nav-cta" href="/Account/Login">Login</a>
                 }
 
-                <button class="mobile-toggle nav-icon d-lg-none" id="mobileToggle" aria-label="Open menu">
+                <button class="mobile-toggle nav-icon d-lg-none" id="mobileToggle" type="button" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
             </div>
@@ -88,9 +88,7 @@
 </header>
 
 <main>
-    <div class="container">
-        @RenderBody()
-    </div>
+    @RenderBody()
 </main>
 
 <footer class="py-4 mt-5">

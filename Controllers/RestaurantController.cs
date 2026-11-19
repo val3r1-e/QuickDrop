@@ -22,12 +22,14 @@ public class RestaurantController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateStatus(int id, string status)
     {
         var user = AuthService.Current(_db, HttpContext);
         if (user == null || user.Role != "RestaurantManager") return Unauthorized();
         var order = await _db.Orders.FindAsync(id);
         if (order == null) return NotFound();
+        if (status != "Accepted" && status != "Preparing" && status != "Ready for Pickup") return BadRequest("Invalid restaurant status.");
         order.Status = status;
         await _db.SaveChangesAsync();
         return RedirectToAction("Index");

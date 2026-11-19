@@ -65,3 +65,10 @@ public class OrderItem
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
 }
+
+public class AdminActivityViewModel
+{
+    public string Name { get; set; } = "";
+    public string Status { get; set; } = "";
+    public string Location { get; set; } = "";
+}

@@ -6,14 +6,43 @@ public static class DbSeeder
 {
     public static void Seed(QuickDropDbContext db)
     {
-        if (db.Users.Any()) return;
-
-        db.Users.AddRange(
+        var demoUsers = new[]
+        {
             new AppUser { FullName = "Admin", Email = "admin@gmail.com", Password = "Admin123!", Role = "Admin", Phone = "0700000000" },
             new AppUser { FullName = "Restaurant Manager", Email = "manager@gmail.com", Password = "Manager123!", Role = "RestaurantManager", Phone = "0700000001" },
             new AppUser { FullName = "Delivery Driver", Email = "driver@gmail.com", Password = "Driver123!", Role = "Driver", Phone = "0700000002" },
             new AppUser { FullName = "Demo Customer", Email = "customer@gmail.com", Password = "Customer123!", Role = "Customer", Phone = "0700000003" }
-        );
+        };
+
+        foreach (var demo in demoUsers)
+        {
+            var legacyEmail = demo.Role == "Admin"
+                ? "admin@quickdrop.com"
+                : demo.Role == "RestaurantManager"
+                    ? "manager@quickdrop.com"
+                    : demo.Role == "Driver"
+                        ? "driver@quickdrop.com"
+                        : "customer@quickdrop.com";
+
+            var user = db.Users.FirstOrDefault(x => x.Role == demo.Role)
+                       ?? db.Users.FirstOrDefault(x => x.Email == legacyEmail);
+
+            if (user == null)
+            {
+                db.Users.Add(demo);
+            }
+            else
+            {
+                user.FullName = demo.FullName;
+                user.Email = demo.Email;
+                user.Password = demo.Password;
+                user.Role = demo.Role;
+                user.Phone = demo.Phone;
+            }
+        }
+        db.SaveChanges();
+
+        if (db.Restaurants.Any()) return;
 
         var restaurants = new[]
         {
