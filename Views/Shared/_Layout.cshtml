@@ -1,0 +1,131 @@
+@using QuickDrop.Services
+@inject QuickDrop.Data.QuickDropDbContext Db
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
+@{
+    var current = AuthService.Current(Db, Context);
+    var path = (Context.Request.Path.Value ?? "").ToLower();
+    var cartCount = ViewBag.CartCount ?? 0;
+    var notifCount = ViewBag.NotificationsCount ?? 0;
+    string dashboardUrl = current != null ? (current.Role == "Admin" ? "/Admin/Index" : current.Role == "Driver" ? "/Driver/Index" : current.Role == "RestaurantManager" ? "/Restaurant/Index" : "/Customer/Index") : "/Account/Login";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - QuickDrop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    @{
+        var cssFile = System.IO.Path.Combine(Env.ContentRootPath, "wwwroot", "css", "site.css");
+        var cssVer = System.IO.File.Exists(cssFile) ? System.IO.File.GetLastWriteTimeUtc(cssFile).Ticks.ToString() : DateTime.UtcNow.Ticks.ToString();
+    }
+    <link rel="stylesheet" href="~/css/site.css?v=@cssVer" />
+</head>
+<body>
+<header class="qd-nav sticky-top">
+    <nav class="main-nav">
+        <div class="container d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <a class="navbar-brand" href="/">Quick<span>Drop</span></a>
+                <ul class="nav nav-links d-none d-lg-flex">
+                    <li><a class="nav-link @(path == "/" ? "active" : "")" href="/">Home</a></li>
+                    <li><a class="nav-link @(path.StartsWith("/customer/restaurant") || path == "/customer" ? "active" : "")" href="/Customer/Index">Restaurants</a></li>
+                    <li><a class="nav-link @(path.Contains("order-history") ? "active" : "")" href="/Customer/Index#order-history">Orders</a></li>
+                    <li><a class="nav-link" href="/#categories">Categories</a></li>
+                    <li><a class="nav-link @(path.StartsWith("/customer/track") ? "active" : "")" href="/Customer/Track">Track Order</a></li>
+                    <li><a class="nav-link @(path.StartsWith("/admin") || path.StartsWith("/driver") || path.StartsWith("/restaurant") ? "active" : "")" href="@dashboardUrl">Dashboard</a></li>
+                </ul>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <a class="nav-icon position-relative d-none d-lg-inline" href="/Customer/Index" title="Cart">
+                    <span class="cart-icon">🛒</span>
+                    <span class="badge cart-count">@cartCount</span>
+                </a>
+
+                <a class="nav-icon position-relative" href="#" title="Notifications">
+                    <span class="notif-icon">🔔</span>
+                    @if (notifCount > 0) { <span class="notif-dot">@notifCount</span> }
+                </a>
+
+                @if (current != null) {
+                    <div class="dropdown d-inline-block">
+                        <a class="nav-link profile-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">@current.FullName</a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="@dashboardUrl">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="/Account/Logout">Logout</a></li>
+                        </ul>
+                    </div>
+                } else {
+                    <a class="nav-cta" href="/Account/Login">Login</a>
+                }
+
+                <button class="mobile-toggle nav-icon d-lg-none" id="mobileToggle" aria-label="Open menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="mobile-menu">
+            <div class="container p-3">
+                <a class="d-block nav-link mb-2" href="/">Home</a>
+                <a class="d-block nav-link mb-2" href="/Customer/Index">Restaurants</a>
+                <a class="d-block nav-link mb-2" href="/Customer/Index#order-history">Orders</a>
+                <a class="d-block nav-link mb-2" href="/#categories">Categories</a>
+                <a class="d-block nav-link mb-2" href="/Customer/Track">Track Order</a>
+                <a class="d-block nav-link mb-2" href="@dashboardUrl">Dashboard</a>
+                <a class="d-block nav-link mb-2" href="/Customer/Index">Cart (@cartCount)</a>
+                @if (current != null) {
+                    <a class="d-block nav-link" href="@dashboardUrl">Profile</a>
+                    <a class="d-block nav-link" href="/Account/Logout">Logout</a>
+                } else {
+                    <a class="d-block nav-link" href="/Account/Login">Login</a>
+                }
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+        @RenderBody()
+    </div>
+</main>
+
+<footer class="py-4 mt-5">
+    <div class="container text-center text-muted">QuickDrop · Demo delivery platform</div>
+</footer>
+
+<!-- Toast container (used by site.js showToast) -->
+<div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    @{
+        var jsFile = System.IO.Path.Combine(Env.ContentRootPath, "wwwroot", "js", "site.js");
+        var jsVer = System.IO.File.Exists(jsFile) ? System.IO.File.GetLastWriteTimeUtc(jsFile).Ticks.ToString() : DateTime.UtcNow.Ticks.ToString();
+        var mapFile = System.IO.Path.Combine(Env.ContentRootPath, "wwwroot", "js", "map.js");
+        var mapVer = System.IO.File.Exists(mapFile) ? System.IO.File.GetLastWriteTimeUtc(mapFile).Ticks.ToString() : DateTime.UtcNow.Ticks.ToString();
+    }
+    <script src="~/js/site.js?v=@jsVer"></script>
+    <script src="~/js/map.js?v=@mapVer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+@* Server-driven toasts: show TempData Success/Error as toast notifications *@
+<script>
+    (function(){
+        try {
+            var s = @System.Text.Json.JsonSerializer.Serialize(TempData["Success"] ?? null);
+            var e = @System.Text.Json.JsonSerializer.Serialize(TempData["Error"] ?? null);
+            document.addEventListener('DOMContentLoaded', function(){
+                if (s) {
+                    try { if (window.showToast) showToast(s, 'success'); } catch(e){}
+                }
+                if (e) {
+                    try { if (window.showToast) showToast(e, 'error'); } catch(e){}
+                }
+            });
+        } catch (ex) { console && console.warn && console.warn('toast init error', ex); }
+    })();
+</script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

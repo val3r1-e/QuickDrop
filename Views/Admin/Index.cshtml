@@ -1,0 +1,170 @@
+@model IEnumerable<QuickDrop.Models.Order>
+@using QuickDrop.Services
+@inject QuickDrop.Data.QuickDropDbContext Db
+@{
+	ViewData["Title"] = "Admin Dashboard";
+	var current = AuthService.Current(Db, Context);
+	var orders = Model ?? Enumerable.Empty<QuickDrop.Models.Order>();
+	var totalUsers = ViewBag.Users ?? 0;
+	var totalRestaurants = ViewBag.Restaurants ?? 0;
+	var revenue = ViewBag.Revenue ?? 0m;
+}
+
+<div class="container py-4">
+  <div class="admin-layout">
+	<aside class="admin-sidebar">
+	  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div class="brand-mark">QD</div><div style="font-weight:800;color:var(--white)">QuickDrop</div></div>
+	  <nav>
+		<a href="/Admin/Index" class="nav-link active">Dashboard</a>
+		<a href="/Admin/Customers" class="nav-link">Customers</a>
+		<a href="/Admin/Drivers" class="nav-link">Drivers</a>
+		<a href="/Restaurant/Index" class="nav-link">Restaurants</a>
+		<a href="/Admin/Orders" class="nav-link">Orders</a>
+		<a href="/Admin/Payments" class="nav-link">Payments</a>
+		<a href="/Admin/Reports" class="nav-link">Reports</a>
+		<a href="/Admin/Settings" class="nav-link">Settings</a>
+	  </nav>
+	</aside>
+
+	<main class="admin-main">
+	  <div class="topbar">
+		<div class="d-flex align-items-center gap-3">
+		  <form class="search"><input class="form-control-dark" placeholder="Search orders, users, restaurants..." /></form>
+		</div>
+		<div class="d-flex align-items-center gap-2">
+		  <button class="nav-icon" title="Notifications">🔔</button>
+		  <div class="nav-user text-end"><div style="color:var(--white)">@current?.FullName</div><small class="text-muted-light">Admin</small></div>
+		</div>
+	  </div>
+
+	  <section class="mt-3">
+		<div class="stat-grid mb-3">
+		  <div class="stat-card">
+			<div class="d-flex justify-content-between align-items-center">
+			  <div>
+				<div class="small text-muted-light">Total Users</div>
+				<div class="stat-number" data-count="@totalUsers">0</div>
+			  </div>
+			  <div class="icon">👥</div>
+			</div>
+			<div class="progress-bar mt-3"><i style="width:45%"></i></div>
+		  </div>
+
+		  <div class="stat-card">
+			<div class="d-flex justify-content-between align-items-center">
+			  <div>
+				<div class="small text-muted-light">Active Drivers</div>
+				<div class="stat-number" data-count="@ViewBag.ActiveDrivers">0</div>
+			  </div>
+			  <div class="icon">🚗</div>
+			</div>
+			<div class="progress-bar mt-3"><i style="width:62%"></i></div>
+		  </div>
+
+		  <div class="stat-card">
+			<div class="d-flex justify-content-between align-items-center">
+			  <div>
+				<div class="small text-muted-light">Restaurants</div>
+				<div class="stat-number" data-count="@totalRestaurants">0</div>
+			  </div>
+			  <div class="icon">🍽️</div>
+			</div>
+			<div class="progress-bar mt-3"><i style="width:38%"></i></div>
+		  </div>
+
+		  <div class="stat-card">
+			<div class="d-flex justify-content-between align-items-center">
+			  <div>
+				<div class="small text-muted-light">Orders Today</div>
+				<div class="stat-number" data-count="@ViewBag.OrdersToday">0</div>
+			  </div>
+			  <div class="icon">📦</div>
+			</div>
+			<div class="progress-bar mt-3"><i style="width:70%"></i></div>
+		  </div>
+
+		  <div class="stat-card">
+			<div class="d-flex justify-content-between align-items-center">
+			  <div>
+				<div class="small text-muted-light">Revenue</div>
+				<div class="stat-number" data-count="@((decimal)revenue)">UGX 0</div>
+			  </div>
+			  <div class="icon">💳</div>
+			</div>
+			<div class="progress-bar mt-3"><i style="width:52%"></i></div>
+		  </div>
+		</div>
+	  </section>
+
+	  <section class="mb-4">
+		<div class="d-flex gap-3 flex-column flex-lg-row">
+		  <div class="flex-fill table-responsive-custom">
+			<div class="d-flex justify-content-between align-items-center mb-2"><h5 style="margin:0;color:var(--white)">Recent Orders</h5><div class="small text-muted-light">Updated live</div></div>
+			<div class="table-responsive">
+			  <table class="table table-dark table-hover align-middle">
+				<thead><tr><th>Order ID</th><th>Customer</th><th>Restaurant</th><th>Driver</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+				<tbody>
+				@foreach(var o in orders){
+				  var s = o.Status?.ToLower() ?? "pending";
+				  var badge = s.Contains("deliver") ? "delivered" : s.Contains("way") ? "ontheway" : s.Contains("prepar") ? "preparing" : "pending";
+				  <tr>
+					<td>#@o.Id</td>
+					<td>@o.Customer?.FullName</td>
+					<td>@o.Restaurant?.Name</td>
+					<td>@(o.Driver?.FullName ?? "—")</td>
+					<td>UGX @o.Total.ToString("N0")</td>
+					<td><span class="status-badge @badge">@o.Status</span></td>
+					<td>@o.CreatedAt.ToLocalTime().ToString("g")</td>
+				  </tr>
+				}
+				</tbody>
+			  </table>
+			</div>
+		  </div>
+
+		  <div style="width:360px;min-width:260px;">
+			<div class="card glass p-3 mb-3">
+			  <h6 style="margin:0;color:var(--white)">Revenue</h6>
+			  <canvas id="revenueChart" width="340" height="200"></canvas>
+			</div>
+
+			<div class="card glass p-3 mb-3">
+			  <h6 style="margin:0;color:var(--white)">Driver activity</h6>
+			  <div class="mini-list mt-2">
+				@foreach(var d in ViewBag.ActiveDriversList ?? new List<dynamic>()){
+				  <div class="item"><div><strong>@d.Name</strong><div class="small text-muted-light">@d.Status</div></div><div class="small text-muted-light">@d.Location</div></div>
+				}
+				@if ((ViewBag.ActiveDriversList ?? new List<dynamic>()).Count == 0) { <div class="empty-state">No active drivers</div> }
+			  </div>
+			</div>
+
+			<div class="card glass p-3">
+			  <h6 style="margin:0;color:var(--white)">Top restaurants</h6>
+			  <div class="mini-list mt-2">
+				@foreach(var r in ViewBag.TopRestaurants ?? new List<dynamic>()){
+				  <div class="item"><div>@r.Name</div><div class="small text-muted-light">@r.Orders orders</div></div>
+				}
+				@if ((ViewBag.TopRestaurants ?? new List<dynamic>()).Count == 0) { <div class="empty-state">No data</div> }
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </section>
+	</main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Animated counters
+  document.addEventListener('DOMContentLoaded', function(){
+	document.querySelectorAll('.stat-number').forEach(function(el){
+	  var target = el.getAttribute('data-count');
+	  if (!target) return;
+	  if (String(target).startsWith('UGX')){ el.textContent = target; return; }
+	  var val = Number(target) || 0;
+	  var cur = 0; var step = Math.max(1, Math.floor(val/80));
+	  var id = setInterval(function(){ cur += step; if (cur>=val){ cur = val; clearInterval(id);} el.textContent = cur; }, 18);
+	});
+  });
+</script>

@@ -1,0 +1,8 @@
+@model IEnumerable<QuickDrop.Models.Order>
+@{ ViewData["Title"] = "Restaurant Dashboard"; }
+<div class="container py-5"><div class="mb-4"><span class="eyebrow">RESTAURANT MANAGER</span><h1>Orders & menus</h1></div>
+<div class="card dark-card"><div class="card-body"><h4>Incoming orders</h4><table class="table table-dark align-middle"><thead><tr><th>Order</th><th>Customer</th><th>Restaurant</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>
+@foreach(var o in Model){<tr><td>#@o.Id</td><td>@o.Customer?.FullName</td><td>@o.Restaurant?.Name</td><td>UGX @o.Total.ToString("N0")</td><td>@o.Status</td><td><form method="post" action="/Restaurant/UpdateStatus" class="d-flex gap-2"><input type="hidden" name="id" value="@o.Id"><select name="status" class="form-select form-select-sm"><option>Accepted</option><option>Preparing</option><option>Ready for Pickup</option></select><button class="btn btn-sm qd-btn">Save</button></form></td></tr>}
+</tbody></table></div></div>
+<div class="row g-3 mt-4">@foreach(var r in ViewBag.Restaurants){<div class="col-md-4"><div class="card product-card"><div class="card-body"><h5>@r.Name</h5><p class="text-muted">@r.Products.Count products</p><span class="status">@(r.IsOpen ? "OPEN" : "CLOSED")</span></div></div></div>}</div>
+</div>

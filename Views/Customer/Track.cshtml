@@ -1,0 +1,22 @@
+@model QuickDrop.Models.Order
+@{ ViewData["Title"] = "Track Order"; var key = ViewBag.GoogleMapsKey as string ?? ""; }
+<div class="container py-5">
+<div class="d-flex justify-content-between"><div><span class="eyebrow">LIVE DELIVERY</span><h1>Order #@Model.Id</h1><p>@Model.Status · @Model.PaymentStatus</p></div><a href="/Customer" class="btn btn-outline-dark h-50">Dashboard</a></div>
+<div class="card map-card mb-4"><div id="map"></div></div>
+<div class="row g-3"><div class="col-md-4"><div class="metric"><span>Restaurant</span><b>@Model.Restaurant?.Name</b></div></div><div class="col-md-4"><div class="metric"><span>Driver</span><b>@(Model.Driver?.FullName ?? "Assigning driver")</b></div></div><div class="col-md-4"><div class="metric"><span>Delivery</span><b>@Model.DeliveryAddress</b></div></div></div>
+</div>
+@section Scripts {
+<script>
+window.quickDropMap = {
+    key: "@key",
+    destination: {lat:@Model.DeliveryLat.ToString(System.Globalization.CultureInfo.InvariantCulture), lng:@Model.DeliveryLng.ToString(System.Globalization.CultureInfo.InvariantCulture)},
+    restaurant: {lat:@Model.Restaurant?.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture), lng:@Model.Restaurant?.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}
+};
+</script>
+<script src="~/js/map.js"></script>
+@if (!string.IsNullOrWhiteSpace(key) && !key.Contains("PASTE_")) {
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=@key&callback=initQuickDropMap"></script>
+} else {
+<script>document.getElementById("map").innerHTML='<div class="map-placeholder">Google Maps is ready. Add your API key in <b>appsettings.json</b> to enable the live map.</div>';</script>
+}
+}

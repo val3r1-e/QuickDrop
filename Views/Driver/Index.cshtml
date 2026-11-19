@@ -1,0 +1,147 @@
+@model IEnumerable<QuickDrop.Models.Order>
+@using QuickDrop.Services
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@inject QuickDrop.Data.QuickDropDbContext Db
+@{
+	ViewData["Title"] = "Driver Dashboard";
+	var current = AuthService.Current(Db, Context);
+	var orders = Model ?? Enumerable.Empty<QuickDrop.Models.Order>();
+	var active = orders.FirstOrDefault(o => o.DriverId != null && o.Status != "Delivered") ?? orders.FirstOrDefault(o => o.DriverId == null);
+	var googleKey = Configuration["GoogleMaps:ApiKey"];
+}
+
+<div class="container py-5">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+	<div class="d-flex align-items-center gap-3">
+	  <div class="brand-mark">QD</div>
+	  <div>
+		<span class="eyebrow">DRIVER</span>
+		<h2 style="margin:0;color:var(--white)">Delivery dashboard</h2>
+	  </div>
+	</div>
+	<div class="d-flex align-items-center gap-2">
+	  <div class="nav-user text-end"><div style="color:var(--white);font-weight:700">@current?.FullName</div><small class="text-muted-light">Driver</small></div>
+	  <div class="form-check form-switch ms-3">
+		<input class="form-check-input" type="checkbox" id="driverOnline" checked>
+		<label class="form-check-label small text-muted-light" for="driverOnline">Online</label>
+	  </div>
+	  <button class="nav-icon" title="Notifications">🔔</button>
+	</div>
+  </div>
+
+  <!-- Statistics -->
+  <div class="row g-3 mb-4">
+	<div class="col-sm-6 col-md-3">
+	  <div class="dash-card reveal">
+		<div class="small text-muted-light">Today's Deliveries</div>
+		<div class="h3" id="stat-deliveries">@orders.Count(o => o.CreatedAt.Date == DateTime.UtcNow.Date)</div>
+	  </div>
+	</div>
+	<div class="col-sm-6 col-md-3">
+	  <div class="dash-card reveal">
+		<div class="small text-muted-light">Earnings</div>
+		<div class="h3" id="stat-earnings">UGX @orders.Sum(o => o.Total).ToString("N0")</div>
+	  </div>
+	</div>
+	<div class="col-sm-6 col-md-3">
+	  <div class="dash-card reveal">
+		<div class="small text-muted-light">Completed Orders</div>
+		<div class="h3" id="stat-completed">@orders.Count(o => o.Status == "Delivered")</div>
+	  </div>
+	</div>
+	<div class="col-sm-6 col-md-3">
+	  <div class="dash-card reveal">
+		<div class="small text-muted-light">Rating</div>
+		<div class="h3" id="stat-rating">4.8 ⭐</div>
+	  </div>
+	</div>
+  </div>
+
+  <div class="row g-4">
+	<div class="col-lg-6">
+	  <!-- Active Delivery Card -->
+	  <div class="card glass p-3 reveal">
+		<h5 style="margin-top:0">Active delivery</h5>
+		@if (active == null)
+		{
+		  <div class="empty-state">No active deliveries. Waiting for assignments.</div>
+		}
+		else
+		{
+		  <div>
+			<div class="d-flex gap-3 align-items-center">
+			  <div style="flex:0 0 80px"><img src="@(active.Restaurant?.ImageUrl ?? "/images/restaurant-placeholder.jpg")" style="width:80px;height:80px;object-fit:cover;border-radius:10px" /></div>
+			  <div>
+				<div style="color:var(--white);font-weight:700">#@active.Id · @active.Restaurant?.Name</div>
+				<div class="small text-muted-light">Customer: @active.Customer?.FullName</div>
+				<div class="small text-muted-light">Pickup: @active.Restaurant?.Address</div>
+				<div class="small text-muted-light">Delivery: @active.DeliveryAddress</div>
+			  </div>
+			</div>
+
+			<div class="d-flex gap-3 mt-3">
+			  <div class="quick-action"><div class="small text-muted-light">Order value</div><div style="font-weight:700">UGX @active.Total.ToString("N0")</div></div>
+			  <div class="quick-action"><div class="small text-muted-light">Delivery fee</div><div style="font-weight:700">UGX 3,000</div></div>
+			  <div class="quick-action"><div class="small text-muted-light">Distance</div><div style="font-weight:700">~4.2 km</div></div>
+			</div>
+
+			<div class="mt-3 d-flex gap-2 flex-wrap">
+			  @if (active.DriverId == null)
+			  {
+				<form method="post" action="/Driver/Accept"><input type="hidden" name="id" value="@active.Id"><button class="qd-btn">Accept Delivery</button></form>
+			  }
+			  <a class="qd-btn ghost" href="https://www.google.com/maps/dir/?api=1&destination=@Uri.EscapeDataString(active.DeliveryAddress)" target="_blank">Navigate</a>
+			  <a class="qd-btn" href="tel:+000000000" >Contact Customer</a>
+			  <form method="post" action="/Driver/UpdateStatus" class="d-inline-block">
+				<input type="hidden" name="id" value="@active.Id" />
+				<input type="hidden" name="status" value="Picked Up" />
+				<button class="qd-btn">Mark Picked Up</button>
+			  </form>
+			  <form method="post" action="/Driver/UpdateStatus" class="d-inline-block">
+				<input type="hidden" name="id" value="@active.Id" />
+				<input type="hidden" name="status" value="Delivered" />
+				<button class="qd-btn ghost">Mark Delivered</button>
+			  </form>
+			</div>
+		  </div>
+		}
+	  </div>
+	</div>
+
+	<div class="col-lg-6">
+	  <!-- Map Section -->
+	  <div class="card glass p-0 h-100 reveal">
+		<div style="height:460px;position:relative;overflow:hidden;border-radius:12px">
+		  @if (!string.IsNullOrEmpty(googleKey) && active != null && active.Restaurant != null)
+		  {
+			<div id="map" style="height:100%;width:100%"></div>
+			<script>
+			  window.quickDropMap = {
+				restaurant: { lat: @active.Restaurant.Latitude, lng: @active.Restaurant.Longitude },
+				destination: { lat: @active.DeliveryLat == 0 ? @active.Restaurant.Latitude : @active.DeliveryLat, lng: @active.DeliveryLng == 0 ? @active.Restaurant.Longitude : @active.DeliveryLng }
+			  };
+			</script>
+			<script async defer src="https://maps.googleapis.com/maps/api/js?key=@googleKey&callback=initQuickDropMap"></script>
+			<script src="~/js/map.js"></script>
+		  }
+		  else
+		  {
+			<div class="map-placeholder">Map is unavailable. Showing estimated locations.
+			  <div class="mt-3 small text-muted-light">Enable Google Maps API key in configuration to view live map.</div>
+			</div>
+		  }
+		</div>
+	  </div>
+	</div>
+  </div>
+
+  <!-- Recent deliveries table (preserve) -->
+  <div class="row mt-4">
+	<div class="col-12">
+	  <div class="card dark-card"><div class="card-body"><h4>Recent deliveries</h4>
+		<table class="table table-dark table-hover align-middle"><thead><tr><th>Order</th><th>Customer</th><th>Restaurant</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>
+		@foreach(var o in orders){<tr><td>#@o.Id</td><td>@o.Customer?.FullName</td><td>@o.Restaurant?.Name</td><td>UGX @o.Total.ToString("N0")</td><td><span class="status">@o.Status</span></td><td>@if(o.DriverId==null){<form method="post" action="/Driver/Accept"><input type="hidden" name="id" value="@o.Id"><button class="btn qd-btn btn-sm">Accept</button></form>} else {<form method="post" action="/Driver/UpdateStatus"><input type="hidden" name="id" value="@o.Id"><select class="form-select form-select-sm" name="status"><option>Picked Up</option><option>On the Way</option><option>Delivered</option></select><button class="btn qd-btn btn-sm">Update</button></form>}}</td></tr> }
+		</tbody></table></div></div>
+	</div>
+  </div>
+</div>

@@ -1,0 +1,147 @@
+@model IEnumerable<QuickDrop.Models.Order>
+@using QuickDrop.Services
+@using Microsoft.EntityFrameworkCore
+@inject QuickDrop.Data.QuickDropDbContext Db
+@{
+	ViewData["Title"] = "Customer Dashboard";
+	var current = AuthService.Current(Db, Context);
+	var orders = Model ?? Enumerable.Empty<QuickDrop.Models.Order>();
+	var activeOrder = orders.FirstOrDefault(o => o.Status != "Delivered");
+	var restaurants = Db.Restaurants.OrderBy(r => r.Id).Take(8).ToList();
+	var recommended = Db.Products.Include(p => p.Restaurant).OrderByDescending(p => p.Id).Take(6).ToList();
+}
+
+<div class="container py-5">
+  <!-- Header -->
+  <div class="d-flex align-items-center gap-3 mb-4">
+	<div class="brand-mark">QD</div>
+	<div>
+	  <h4 style="margin:0;color:var(--white)">QuickDrop</h4>
+	  <small class="text-muted-light">Customer dashboard</small>
+	</div>
+
+	<div class="ms-auto d-flex align-items-center gap-2">
+	  <form onsubmit="event.preventDefault(); location.href='/?q='+encodeURIComponent(this.query.value);" class="d-flex" style="min-width:260px">
+		<input name="query" class="form-control-dark" placeholder="Search restaurants or meals..." />
+	  </form>
+	  <button class="nav-icon" title="Notifications">🔔</button>
+	  <a class="nav-icon" href="/Customer/Index" title="Cart">🛒</a>
+	  <div class="nav-user text-end">
+		<div style="color:var(--white)">@current?.FullName</div>
+		<small class="text-muted-light">@current?.Email</small>
+	  </div>
+	</div>
+  </div>
+
+  <!-- Welcome + Quick Actions -->
+  <div class="row g-3 mb-4">
+	<div class="col-lg-8">
+	  <div class="card glass p-4">
+		<h3 style="margin:0">Good evening, @current?.FullName 👋</h3>
+		<p class="text-muted-light">Ready for a delicious meal? Here are your quick actions and recommendations.</p>
+
+		<div class="d-flex gap-2 flex-wrap mt-3">
+		  <a class="qd-btn" href="/">Browse Restaurants</a>
+		  <a class="qd-btn ghost" href="@(activeOrder != null ? $"/Customer/Track/{activeOrder.Id}" : "/Customer/Index")">Track Order</a>
+		  <a class="qd-btn ghost" href="#order-history">Order History</a>
+		  <a class="qd-btn" href="@(activeOrder != null ? $"/Customer/Track/{activeOrder.Id}" : "/Customer/Index")">View Cart</a>
+		</div>
+	  </div>
+	</div>
+
+	<div class="col-lg-4">
+	  <!-- Active Order Card -->
+	  <div class="card glass p-3">
+		<h5 style="margin-top:0">Active order</h5>
+		@if (activeOrder == null)
+		{
+		  <div class="empty-state">You have no active orders. Start by browsing restaurants.</div>
+		}
+		else
+		{
+		  <div>
+			<div class="d-flex align-items-center gap-3">
+			  <img src="@(activeOrder.Restaurant?.ImageUrl ?? "/images/restaurant-placeholder.jpg")" style="width:64px;height:64px;object-fit:cover;border-radius:10px" />
+			  <div>
+				<div style="color:var(--white);font-weight:700">@activeOrder.Restaurant?.Name</div>
+				<div class="small text-muted-light">Order #@activeOrder.Id · Est: 25-35 min</div>
+			  </div>
+			</div>
+
+			<div class="mt-3">
+			  <div class="order-tracker" data-status="@activeOrder.Status">
+				<div class="step" data-step="1"><div class="dot"></div><div class="label">Order Placed</div></div>
+				<div class="step" data-step="2"><div class="dot"></div><div class="label">Preparing</div></div>
+				<div class="step" data-step="3"><div class="dot"></div><div class="label">Picked Up</div></div>
+				<div class="step" data-step="4"><div class="dot"></div><div class="label">On The Way</div></div>
+				<div class="step" data-step="5"><div class="dot"></div><div class="label">Delivered</div></div>
+			  </div>
+			</div>
+
+			<div class="mt-3 d-flex justify-content-between align-items-center">
+			  <div>
+				<div class="small text-muted-light">Driver</div>
+				<div style="color:var(--white);font-weight:600">@activeOrder.Driver?.FullName ?? "Assigned soon"</div>
+			  </div>
+			  <a class="qd-btn" href="/Customer/Track/@activeOrder.Id">Track Order</a>
+			</div>
+		  </div>
+		}
+	  </div>
+	</div>
+  </div>
+
+  <!-- Restaurants -->
+  <div class="mb-4">
+	<h4>Restaurants near you</h4>
+	<div class="row g-3">
+	  @foreach (var r in restaurants)
+	  {
+		<div class="col-6 col-md-4 col-lg-3">
+		  <div class="restaurant-card">
+			<img src="@r.ImageUrl" alt="@r.Name" />
+			<div class="card-body">
+			  <h6 style="color:var(--white)">@r.Name</h6>
+			  <div class="small text-muted-light">@r.Cuisine</div>
+			  <div class="mt-2 d-flex gap-2">
+				<a class="qd-btn" href="/Customer/Restaurant/@r.Id">View</a>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  }
+	</div>
+  </div>
+
+  <!-- Recommended Food -->
+  <div class="mb-5">
+	<h4>Recommended for you</h4>
+	<div class="row g-3">
+	  @foreach (var p in recommended)
+	  {
+		<div class="col-6 col-md-4">
+		  <div class="card glass product-card p-0">
+			<img src="@(string.IsNullOrWhiteSpace(p.ImageUrl) ? p.Restaurant?.ImageUrl : p.ImageUrl)" style="height:180px;object-fit:cover;width:100%" />
+			<div style="padding:12px">
+			  <div style="color:var(--white);font-weight:700">@p.Name</div>
+				  <div class="small text-muted-light">@p.Restaurant?.Name · @($"{p.Price:C}")</div>
+			  <div class="mt-2 d-flex justify-content-between align-items-center">
+				<div class="small text-muted-light">⭐ 4.6</div>
+				<a class="qd-btn" href="/Customer/Restaurant/@p.RestaurantId">Add</a>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  }
+	</div>
+  </div>
+
+  <!-- Order history anchor -->
+  <a id="order-history"></a>
+
+  <!-- Recent Orders Table (preserve existing) -->
+  <div class="card dark-card"><div class="card-body"><h4>Recent orders</h4>
+  <table class="table table-dark table-hover align-middle"><thead><tr><th>Order</th><th>Restaurant</th><th>Total</th><th>Status</th><th>Tracking</th></tr></thead><tbody>
+  @foreach(var o in orders) { <tr><td>#@o.Id</td><td>@o.Restaurant?.Name</td><td>UGX @o.Total.ToString("N0")</td><td><span class="status">@o.Status</span></td><td><a href="/Customer/Track/@o.Id" class="btn btn-sm btn-outline-light">Track</a></td></tr> }
+  </tbody></table></div></div>
+</div>

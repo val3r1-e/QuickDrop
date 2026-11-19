@@ -1,0 +1,65 @@
+@{ ViewData["Title"] = "Login"; }
+@{
+	var registerUrl = Url.Action("Register", "Account");
+	var forgotUrl = Url.Action("Forgot", "Account");
+}
+
+<div class="auth-split">
+	<div class="auth-left">
+		<div class="auth-left-inner">
+			<div class="brand-mark">QD</div>
+			<h1>Your food. <br/><span>Your way.</span></h1>
+			<p class="text-muted-light">Order from your favorite restaurants and get it delivered fast. QuickDrop connects customers, restaurants and drivers in one simple platform.</p>
+			<div class="decor-image" aria-hidden="true">
+				<!-- Decorative imagery could be replaced with an asset -->
+				<svg width="240" height="160" viewBox="0 0 240 160" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="160" rx="16" fill="url(#g)"/></svg>
+			</div>
+		</div>
+	</div>
+
+	<div class="auth-right">
+		<div class="login-card glass">
+			<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+				<h2 style="margin:0;color:var(--white)">Welcome back</h2>
+				<small class="text-muted-light">Sign in to continue</small>
+			</div>
+			@if (ViewBag.Error != null) { <div class="alert alert-danger">@ViewBag.Error</div> }
+			<form id="loginForm" method="post">
+				<div class="mb-3">
+					<label class="form-label text-muted-light">Email</label>
+					<input id="emailInput" class="form-control-dark" name="email" type="email" required />
+				</div>
+				<div class="mb-2 position-relative">
+					<label class="form-label text-muted-light">Password</label>
+					<input id="passwordInput" class="form-control-dark" name="password" type="password" required />
+					<button type="button" id="togglePwd" class="btn btn-sm btn-outline-light" style="position:absolute;right:8px;top:34px">Show</button>
+				</div>
+				<div class="d-flex justify-content-between align-items-center mb-3">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="remember" id="rememberMe">
+						<label class="form-check-label small text-muted-light" for="rememberMe">Remember me</label>
+					</div>
+					<div>
+						@if (!String.IsNullOrEmpty(forgotUrl)) { <a href="@forgotUrl" class="small text-muted-light">Forgot password?</a> }
+					</div>
+				</div>
+edwa3\2qqqqqqq1	
+				<button id="loginBtn" class="qd-btn w-100" type="submit">Login</button>
+
+				<div class="text-center mt-3 small text-muted-light">
+					@if (!String.IsNullOrEmpty(registerUrl)) { <text>Don't have an account? <a href="@registerUrl">Register</a></text> }
+				</div>
+			</form>
+
+			<div class="demo-accounts mt-3 small text-muted-light">
+				<div>Demo accounts:</div>
+				<ul>
+					<li>Customer: customer@gmail.com / Customer123!</li>
+					<li>Driver: driver@gmail.com / Driver123!</li>
+					<li>Restaurant: manager@gmail.com / Manager123!</li>
+					<li>Admin: admin@gmail.com / Admin123!</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
