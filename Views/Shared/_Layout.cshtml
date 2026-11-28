@@ -53,9 +53,12 @@
                         <a class="nav-link profile-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">@current.FullName</a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="@dashboardUrl">Dashboard</a></li>
-                            <li><a class="dropdown-item" href="/Account/Logout">Logout</a></li>
                         </ul>
                     </div>
+                    <form method="post" action="/Account/Logout" class="m-0 d-none d-lg-block">
+                        @Html.AntiForgeryToken()
+                        <button class="nav-cta" type="submit">Log out</button>
+                    </form>
                 } else {
                     <a class="nav-cta" href="/Account/Login">Login</a>
                 }
@@ -78,7 +81,10 @@
                 <a class="d-block nav-link mb-2" href="/Customer/Index">Cart (@cartCount)</a>
                 @if (current != null) {
                     <a class="d-block nav-link" href="@dashboardUrl">Profile</a>
-                    <a class="d-block nav-link" href="/Account/Logout">Logout</a>
+                    <form method="post" action="/Account/Logout" class="mt-2">
+                        @Html.AntiForgeryToken()
+                        <button class="qd-btn" type="submit">Log out</button>
+                    </form>
                 } else {
                     <a class="d-block nav-link" href="/Account/Login">Login</a>
                 }

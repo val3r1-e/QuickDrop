@@ -19,8 +19,9 @@
 
 /* Base */
 *{box-sizing:border-box}
-html,body{height:100%}
+html{min-height:100%}
 body{
+  min-height:100vh;
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
   margin:0;
   /* layered purple & black background for depth */
@@ -316,9 +317,7 @@ body.page-loaded{opacity:1;transform:none}
   --focus:0 0 0 3px rgba(168,85,247,.28);
 }
 
-html{background:var(--surface-0);scroll-behavior:smooth;overflow-x:hidden;scrollbar-width:none;-ms-overflow-style:none}
-*{scrollbar-width:none;-ms-overflow-style:none}
-*::-webkit-scrollbar{width:0;height:0;display:none}
+html{height:auto;min-height:100%;background:var(--surface-0);scroll-behavior:smooth;overflow-x:hidden;overflow-y:auto}
 body{
   background:
     radial-gradient(700px 360px at 8% -5%,rgba(139,92,246,.20),transparent 65%),
@@ -326,6 +325,7 @@ body{
     linear-gradient(145deg,var(--surface-0) 0%,#120d1b 48%,var(--surface-0) 100%);
   color:var(--text-soft);
   overflow-x:hidden;
+  overflow-y:auto;
 }
 body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(115deg,transparent 0 40%,rgba(139,92,246,.025) 50%,transparent 60%)}
 

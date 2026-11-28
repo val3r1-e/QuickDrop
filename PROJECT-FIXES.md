@@ -255,3 +255,29 @@ python3 test-scripts/test_quickdrop.py http://127.0.0.1:5000
 - Test workflow actions create and update records in the configured SQLite
   database. Use a disposable development database when you want test runs that
   do not change persistent demo data.
+
+## Restaurant Management, Logout, and Scrolling
+
+- Added a restaurant-manager page at `/Restaurant/Manage` for creating a
+  restaurant with its address, latitude/longitude, image URL, and first priced
+  menu item. Managers can also add more menu items with a category, price,
+  description, and image URL.
+- Newly created restaurants and menu items are included in the public home-page
+  search by name, cuisine, address, item name, or category.
+- Added visible desktop and mobile logout buttons. Logout now uses a
+  CSRF-protected POST so another person can sign in on the same device.
+- Restored vertical page scrolling and visible page scrollbars while keeping
+  horizontal overflow constrained.
+- Extended `test-scripts/test_quickdrop.py` to cover restaurant creation,
+  menu-item creation and search, and switching users through logout.
+
+## Render and Supabase Deployment Preparation
+
+- The application can use SQLite locally (the default) or PostgreSQL by setting
+  `Database__Provider=Postgres` and `ConnectionStrings__DefaultConnection` in
+  the hosting environment.
+- Added a multi-stage Dockerfile for an ASP.NET Core deployment on Render. The
+  app listens on Render's injected `PORT`; local development URLs are unchanged.
+- Do not deploy the demo unchanged for real users: replace the demo plaintext
+  passwords and implement production-grade authentication before exposing
+  customer accounts publicly.

@@ -1,0 +1,152 @@
+@model QuickDrop.Models.RestaurantManagementViewModel
+@{
+    ViewData["Title"] = "Manage Restaurants";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <span class="eyebrow">RESTAURANT MANAGER</span>
+            <h1>Manage restaurants and menus</h1>
+            <p class="text-muted-light mb-0">Add a restaurant, its location, photos, and first menu item. New listings appear in search.</p>
+        </div>
+        <a class="qd-btn ghost" href="/Restaurant/Index">Back to orders</a>
+    </div>
+
+    <section class="card glass p-4 mb-5">
+        <h2 class="h4">Add a restaurant</h2>
+        <p class="text-muted-light">Provide a public image URL and map coordinates for the restaurant and its first menu item.</p>
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(value => value.Errors))
+        {
+            <div class="alert alert-danger">@error.ErrorMessage</div>
+        }
+        <form method="post" action="/Restaurant/CreateRestaurant">
+            @Html.AntiForgeryToken()
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" for="restaurantName">Restaurant name</label>
+                    <input class="form-control-dark w-100" id="restaurantName" name="Name" value="@Model.NewRestaurant.Name" maxlength="100" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="cuisine">Cuisine</label>
+                    <input class="form-control-dark w-100" id="cuisine" name="Cuisine" value="@Model.NewRestaurant.Cuisine" maxlength="100" required />
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="address">Address</label>
+                    <input class="form-control-dark w-100" id="address" name="Address" value="@Model.NewRestaurant.Address" maxlength="250" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="restaurantImage">Restaurant image URL</label>
+                    <input class="form-control-dark w-100" id="restaurantImage" name="ImageUrl" type="url" value="@Model.NewRestaurant.ImageUrl" maxlength="2048" placeholder="https://example.com/restaurant.jpg" required />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="latitude">Latitude</label>
+                    <input class="form-control-dark w-100" id="latitude" name="Latitude" type="number" step="any" min="-90" max="90" value="@Model.NewRestaurant.Latitude" required />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="longitude">Longitude</label>
+                    <input class="form-control-dark w-100" id="longitude" name="Longitude" type="number" step="any" min="-180" max="180" value="@Model.NewRestaurant.Longitude" required />
+                </div>
+            </div>
+
+            <h3 class="h5 mt-4">First menu item</h3>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" for="productName">Item name</label>
+                    <input class="form-control-dark w-100" id="productName" name="ProductName" value="@Model.NewRestaurant.ProductName" maxlength="100" required />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="productCategory">Category</label>
+                    <input class="form-control-dark w-100" id="productCategory" name="ProductCategory" value="@Model.NewRestaurant.ProductCategory" maxlength="60" required />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="productPrice">Price (UGX)</label>
+                    <input class="form-control-dark w-100" id="productPrice" name="ProductPrice" type="number" min="1" step="1" value="@Model.NewRestaurant.ProductPrice" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="productImage">Item image URL</label>
+                    <input class="form-control-dark w-100" id="productImage" name="ProductImageUrl" type="url" value="@Model.NewRestaurant.ProductImageUrl" maxlength="2048" placeholder="https://example.com/menu-item.jpg" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="productDescription">Description</label>
+                    <input class="form-control-dark w-100" id="productDescription" name="ProductDescription" value="@Model.NewRestaurant.ProductDescription" maxlength="500" />
+                </div>
+            </div>
+            <button class="qd-btn mt-4" type="submit">Add restaurant and menu item</button>
+        </form>
+    </section>
+
+    <section>
+        <h2 class="h3 mb-3">Restaurant menus</h2>
+        @if (Model.Restaurants.Count == 0)
+        {
+            <div class="empty-state">No restaurants yet. Add your first restaurant above.</div>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var restaurant in Model.Restaurants)
+                {
+                    <div class="col-12">
+                        <article class="card glass p-3 p-md-4">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <img src="@restaurant.ImageUrl" alt="@restaurant.Name" loading="lazy" style="width:88px;height:72px;object-fit:cover;border-radius:10px" />
+                                <div>
+                                    <h3 class="h5 mb-1">@restaurant.Name</h3>
+                                    <div class="small text-muted-light">@restaurant.Cuisine · @restaurant.Address</div>
+                                    <div class="small text-muted-light">Coordinates: @restaurant.Latitude, @restaurant.Longitude</div>
+                                </div>
+                                <a class="qd-btn ghost ms-auto" href="/Customer/Restaurant/@restaurant.Id">View listing</a>
+                            </div>
+                            @if (restaurant.Products.Count > 0)
+                            {
+                                <div class="table-responsive mb-3">
+                                    <table class="table table-dark align-middle">
+                                        <thead><tr><th>Item</th><th>Category</th><th>Price</th></tr></thead>
+                                        <tbody>
+                                            @foreach (var product in restaurant.Products.OrderBy(p => p.Name))
+                                            {
+                                                <tr>
+                                                    <td><img src="@product.ImageUrl" alt="" loading="lazy" style="width:44px;height:36px;object-fit:cover;border-radius:6px" /> @product.Name</td>
+                                                    <td>@product.Category</td>
+                                                    <td>UGX @product.Price.ToString("N0")</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            <form method="post" action="/Restaurant/CreateProduct" class="row g-2 align-items-end">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="RestaurantId" value="@restaurant.Id" />
+                                <div class="col-md-3">
+                                    <label class="form-label" for="item-name-@restaurant.Id">New item</label>
+                                    <input class="form-control-dark w-100" id="item-name-@restaurant.Id" name="Name" maxlength="100" required />
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label" for="item-category-@restaurant.Id">Category</label>
+                                    <input class="form-control-dark w-100" id="item-category-@restaurant.Id" name="Category" maxlength="60" required />
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label" for="item-price-@restaurant.Id">Price (UGX)</label>
+                                    <input class="form-control-dark w-100" id="item-price-@restaurant.Id" name="Price" type="number" min="1" step="1" required />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label" for="item-image-@restaurant.Id">Image URL</label>
+                                    <input class="form-control-dark w-100" id="item-image-@restaurant.Id" name="ImageUrl" type="url" maxlength="2048" required />
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="qd-btn w-100" type="submit">Add item</button>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label" for="item-description-@restaurant.Id">Description</label>
+                                    <input class="form-control-dark w-100" id="item-description-@restaurant.Id" name="Description" maxlength="500" />
+                                </div>
+                            </form>
+                        </article>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+</div>

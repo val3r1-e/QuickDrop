@@ -35,6 +35,8 @@ public class AccountController : Controller
         };
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public IActionResult Logout()
     {
         AuthService.SignOut(HttpContext);

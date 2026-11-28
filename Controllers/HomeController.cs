@@ -11,9 +11,14 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index(string? q)
     {
+        q = q?.Trim();
         var restaurants = await _db.Restaurants
             .Include(r => r.Products)
-            .Where(r => string.IsNullOrWhiteSpace(q) || r.Name.Contains(q) || r.Cuisine.Contains(q))
+            .Where(r => string.IsNullOrWhiteSpace(q)
+                || r.Name.Contains(q)
+                || r.Cuisine.Contains(q)
+                || r.Address.Contains(q)
+                || r.Products.Any(p => p.Name.Contains(q) || p.Category.Contains(q)))
             .ToListAsync();
         ViewBag.Query = q;
         return View(restaurants);
