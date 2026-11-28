@@ -278,6 +278,10 @@ python3 test-scripts/test_quickdrop.py http://127.0.0.1:5000
   the hosting environment.
 - Added a multi-stage Dockerfile for an ASP.NET Core deployment on Render. The
   app listens on Render's injected `PORT`; local development URLs are unchanged.
+- Added an initial PostgreSQL EF Core migration. Render applies PostgreSQL
+  migrations at startup because Supabase's existing platform tables can cause
+  `EnsureCreated()` to skip creating the app's tables. Local SQLite continues
+  using `EnsureCreated()`.
 - Do not deploy the demo unchanged for real users: replace the demo plaintext
   passwords and implement production-grade authentication before exposing
   customer accounts publicly.

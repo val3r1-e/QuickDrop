@@ -44,7 +44,14 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<QuickDropDbContext>();
-    db.Database.EnsureCreated();
+    if (databaseProvider.Equals("Postgres", StringComparison.OrdinalIgnoreCase))
+    {
+        db.Database.Migrate();
+    }
+    else
+    {
+        db.Database.EnsureCreated();
+    }
     DbSeeder.Seed(db);
 }
 
